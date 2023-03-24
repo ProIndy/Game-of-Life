@@ -13,24 +13,40 @@
 
 NAME	=	life
 
-FLAGS	=	-Wall -Wextra -Werror
+FLAGS	=	-Wall -Wextra
 O_FLAGS	=	-O3
 
 SRC		=	./src/
 SRCS	=	main.c	life.c	read.c	play.c	print.c visualizer.c
 OBJS	=	$(SRCS:.c=.o)
 
-LIBS = -L /usr/local/lib -lmlx
+ifneq (,$(wildcard /usr/local/include/mlx.h))
+MLX			=	-I /usr/local/include
+else
+MLX			=	-I /usr/X11/include
+endif
 
-INCLUDES = -I/usr/local/include
+ifneq (,$(wildcard /usr/local/lib/libmlx.a))
+MLX			+=	-L /usr/local/lib -lmlx
+else ifneq (,$(wildcard /usr/local/lib/libmlx.dylib))
+MLX			+=	-L /usr/local/lib -lmlx
+else
+MLX			+=	-L /usr/X11/lib -lmlx
+endif
 
-FRAMEWORKS = -framework OpenGL -framework Appkit
+UNAME		:=	$(shell uname -s)
+ifeq ($(UNAME), Darwin)
+FRAMEWORKS	=	-framework OpenGL -framework AppKit
+endif
+ifeq ($(UNAME), Linux)
+MLX			+=	-lX11 -lXext
+endif
 
 all:	$(NAME)
 
 $(NAME):
-	gcc $(O_FLAGS) $(FLAGS) $(INCLUDES) -c $(addprefix $(SRC), $(SRCS))
-	gcc $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS) $(FRAMEWORKS)
+	gcc $(O_FLAGS) $(FLAGS) $(MLX) -c $(addprefix $(SRC), $(SRCS))
+	gcc -o $(NAME) $(OBJS) $(MLX) $(FRAMEWORKS)
 
 clean:
 	rm -v -f $(OBJS)

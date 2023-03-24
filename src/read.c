@@ -52,7 +52,7 @@ t_board *make_board(char *initial_state)
     int     i;
 
     board = (t_board*)malloc(sizeof(t_board));
-    ft_memset(board, '\0', sizeof(t_board));
+    ft_memset(board, 0, sizeof(t_board));
     board->x_dimension = get_x_dimension(initial_state);
     board->y_dimension = get_y_dimension(initial_state);
     y = 0;

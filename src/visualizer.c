@@ -8,7 +8,7 @@ int	handle_key(int key, void *param)
 	t_mlx_win	*mlx_win;
 
 	mlx_win = (t_mlx_win *)param;
-	if (key == 53)
+	if (key == 53 || key == 0xff1b)
 	{
 		mlx_destroy_window(mlx_win->mlx_ptr, mlx_win->window);
 		exit(0);
